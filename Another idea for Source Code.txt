@@ -1,0 +1,173 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#define ll long long
+#define endl "\n"
+using namespace std;
+void fast()
+{
+	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+}
+
+int n;
+
+bool check(vector<vector<int>>& chessboard)
+{
+
+	// row check
+
+	for (int rw = 0; rw < n; rw++)
+	{
+		ll sum = 0;
+		for (int col = 0; col < n; col++)
+		{
+			sum += chessboard[rw][col];
+		}
+
+		if (sum > 1)
+			return false;
+
+	}
+	//
+
+	//Main diagonal check
+
+	//above
+
+	for (int rw = 0, col = n - 2; col >= 0; col--)
+	{
+
+		int sum = 0;
+		for (int a = rw, b = col; b < n; a++, b++)
+		{
+			sum += chessboard[a][b];
+		}
+
+		if (sum > 1)
+			return false;
+
+	}
+
+	//below
+
+	for (int rw = 1, col = 0; rw < n - 1; rw++)
+	{
+		int sum = 0;
+		for (int a = rw, b = col; a < n; a++, b++)
+		{
+			sum += chessboard[a][b];
+		}
+
+		if (sum > 1)
+			return false;
+
+	}
+
+	//////////////////////////
+
+	//Minor diagonal check
+
+	//above
+	for (int rw = 0, col = 1; col < n; col++)
+	{
+		int sum = 0;
+		for (int a = rw, b = col; b >= 0; a++, b--)
+		{
+			sum += chessboard[a][b];
+		}
+
+		if (sum > 1)
+			return false;
+	}
+
+	//below
+
+	for (int rw = 1, col = n - 1; rw < n - 1; rw++)
+	{
+		int sum = 0;
+		for (int a = rw, b = col; a < n; a++, b--)
+		{
+			sum += chessboard[a][b];
+		}
+
+		if (sum > 1)
+			return false;
+
+	}
+	return true;
+
+
+}
+//
+int main()
+{
+
+	fast();
+
+	
+	cin >> n;
+	
+	vector<vector<int>>chessboard(n, vector<int>(n, 0));
+
+	vector<int>ptr(n, -1);
+
+	// implementation of backtracking Algorithm
+
+	ll answer = 0;
+
+	for (int cl = 0; ; )
+	{
+		ptr[cl]++;
+		//Reset and move one column back
+		if (ptr[cl] == n) {
+			chessboard[ptr[cl] - 1][cl] = 0;
+			ptr[cl] = -1;
+			cl--;
+			//
+			if (cl == -1)
+				break;
+
+		}
+		else {
+
+			chessboard[ptr[cl]][cl] = 1;
+			//
+			if (ptr[cl] != 0) {
+
+				chessboard[ptr[cl] - 1][cl] = 0;
+			}
+			//
+			if (check(chessboard)) {
+
+				cl++;// move to next column
+
+				if (cl == n)
+				{
+					cl--;
+					answer++;
+
+					cout << "solution " << answer << ":" << endl;
+
+					for (int row = 0; row < n; row++)
+					{
+						for (int col = 0; col < n; col++)
+						{
+							cout << chessboard[row][col] << " ";
+						}
+						cout << endl;
+					}
+				}
+			}
+
+		}
+	}
+
+	//cout << "ans==" << answer << endl;
+	cout << endl;
+	if (answer > 0)
+		cout << "all possible solutions equal (" << answer << ")" << endl;
+	else
+		cout << "There is no answer" << endl;
+
+
+}

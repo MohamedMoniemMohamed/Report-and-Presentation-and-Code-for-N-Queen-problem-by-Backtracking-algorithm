@@ -1,0 +1,101 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#define ll long long
+#define endl "\n"
+using namespace std;
+void fast()
+{
+	ios::sync_with_stdio(0); 
+	cin.tie(0);
+	cout.tie(0);
+}
+
+int n;
+
+vector<int>unsaverow(100);
+vector<int>unsavecol(100);
+vector<int>unsavedig1(100);
+vector<int>unsavedig2(100);
+
+vector< vector<pair<int,int>> >mat;
+vector<pair<int, int>>curnt;
+
+vector< vector<int > >board;
+
+
+bool safe(int row,int col)
+{
+	return !unsaverow[row] && !unsavecol[col] && !unsavedig1[row + col] && !unsavedig2[n + row - col];
+}
+//
+void solve(int row)
+{
+	if (row > n)
+	{
+		if (curnt.size() == n)
+		{
+			mat.push_back(curnt);
+			return;
+		}
+	}
+
+	int res = 0;
+	for (int col = 1; col <= n; col++)
+	{
+		if (safe(row, col))
+		{
+
+			unsaverow[row] = 1;
+			unsavecol[col] = 1;
+			unsavedig1[row+col] = 1;
+			unsavedig2[n + row - col] = 1;
+			
+			curnt.push_back({ row, col });
+			solve(row + 1);
+			curnt.pop_back();
+
+			unsaverow[row] = 0;
+			unsavecol[col] = 0;
+			unsavedig1[row + col] = 0;
+			unsavedig2[n + row - col] = 0;
+		}
+	}
+	
+
+}
+int main()
+{
+
+	fast();
+
+	cin >> n;
+	board = vector< vector<int > >(n+1, vector<int>(n+1,0));
+	solve(1);
+
+	for (int i = 0; i < mat.size(); i++)
+	{
+		for (int k = 0; k < mat[i].size(); k++)
+		{
+			board[mat[i][k].first][mat[i][k].second] = 1;
+		}
+		cout << "\nsolution :" << i + 1 << endl;
+		for (int q = 1; q < board.size(); q++)
+		{
+			for (int w = 1; w < board[q].size(); w++)
+			{
+				cout << board[q][w] << " ";
+			}
+			cout << endl;
+		}
+		for (int k = 0; k < mat[i].size(); k++)
+		{
+			board[mat[i][k].first][mat[i][k].second] = 0;
+		}
+
+    }
+
+	cout << "\nall possible solutions equal (" << mat.size() << ")" << endl;
+	
+
+}
